@@ -26,13 +26,18 @@ if (isset($_POST['contenu'])){
 }
 
 if (isset($_POST['delete'])){
-    unlink($_POST['deleteFile']);
+    if (is_dir('files/roswell/' . $_POST['deleteFile'])){
+        array_map('unlink', glob('files/roswell/' . $_POST['deleteFile']. '/*'));
+        rmdir('files/roswell/' . $_POST['deleteFile']);
+    }else{
+        unlink('files/roswell/' . $_POST['deleteFile']);
+    }
 }
 
-$it = new RecursiveDirectoryIterator("files/roswell");
+$it = new DirectoryIterator("files/roswell");
 
-foreach(new RecursiveIteratorIterator($it) as $file) {
-        if($file->getFilename() != '.' && $file->getFilename() != '..'){
+foreach($it as $file) {
+        if(!$it->isDot()){
 
 ?>
 
